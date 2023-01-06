@@ -9,6 +9,7 @@ $ccusers="user@email.com"
 $summaryusers="user@email.com"
 $fromaddr="AzureSecretsExpiring@email.com"
 $smtpserver="smtp.email.com"
+$emailsubject = "Application Secrets Expiring Soon"
 
 Get-AzureADApplication -All $true | ForEach-Object{
     $applicationName = $objectType = $objectId = $applicationId = $homePage = $identifierUrls = $replyUrls = $keyId = $startDate = $endDate = ""
@@ -122,7 +123,7 @@ foreach ($l in $list){
     $ccaddr = $ccusers
     $fromaddr = $fromaddr
     $emailbody = $l | Select-Object -ExpandProperty group 
-    $subject = "Application Secrets Expiring Soon"
+    $subject = $emailsubject
     $body = ($emailbody | ConvertTo-Html -Head $style | Out-String)
     $body += "<br><br> To update please visit: https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps"
     $sendMailParams = @{
@@ -141,9 +142,8 @@ foreach ($l in $list){
 # Summary email - contains all app secrets that are expiring
 $toaddr = $summaryusers
 #$ccaddr = $ccusers
-$fromaddr  = "AzureSecretsExpiring@server.com"
-$subject = "Application Secrets Expiring Soon"
-$smtpserver = "smtp.server.com"
+$fromaddr  = $fromaddr
+$subject = $emailsubject
 $body = ($email | ConvertTo-Html -Head $style | Out-String)
 $body += "<br><br> To update please visit: https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps"
 $sendMailParams = @{
