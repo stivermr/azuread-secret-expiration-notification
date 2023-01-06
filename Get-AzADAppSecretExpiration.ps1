@@ -4,6 +4,12 @@
 Import-Module AzureAD
 Connect-AzureAD -AccountId user1@server.com
 
+## UPDATE these values
+$ccusers="user@email.com"
+$summaryusers="user@email.com"
+$fromaddr="AzureSecretsExpiring@email.com"
+$smtpserver="smtp.email.com"
+
 Get-AzureADApplication -All $true | ForEach-Object{
     $applicationName = $objectType = $objectId = $applicationId = $homePage = $identifierUrls = $replyUrls = $keyId = $startDate = $endDate = ""
     $applicationName = $_.DisplayName
@@ -109,7 +115,7 @@ $style = $style + "</style>"
 # sends individual email to owner containing only their apps
 foreach ($l in $list){
     $toaddr = $l.name
-    #$ccaddr = "user1@server.com"
+    #$ccaddr = $ccusers
     $fromaddr = "AzureSecretsExpiring@server.com"
     $emailbody = $l | Select-Object -ExpandProperty group 
     $subject = "Application Secrets Expiring Soon"
@@ -130,8 +136,8 @@ foreach ($l in $list){
 }
 
 # Summary email - contains all app secrets that are expiring
-$toaddr = $list.Name
-#$ccaddr = "user1@server.com"
+$toaddr = $summaryusers
+#$ccaddr = $ccusers
 $fromaddr  = "AzureSecretsExpiring@server.com"
 $subject = "Application Secrets Expiring Soon"
 $smtpserver = "smtp.server.com"
