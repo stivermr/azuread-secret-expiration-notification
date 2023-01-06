@@ -114,12 +114,15 @@ $style = $style + "</style>"
 
 # sends individual email to owner containing only their apps
 foreach ($l in $list){
-    $toaddr = $l.name
-    #$ccaddr = $ccusers
-    $fromaddr = "AzureSecretsExpiring@server.com"
+    if ($l.name){
+        $toaddr = $l.name
+    }else{
+        $toaddr = $ccusers
+    }
+    $ccaddr = $ccusers
+    $fromaddr = $fromaddr
     $emailbody = $l | Select-Object -ExpandProperty group 
     $subject = "Application Secrets Expiring Soon"
-    $smtpserver = "smtp.server.com"
     $body = ($emailbody | ConvertTo-Html -Head $style | Out-String)
     $body += "<br><br> To update please visit: https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps"
     $sendMailParams = @{
